@@ -1,5 +1,7 @@
 package io.jyp.crawler.service;
 
+import static io.jyp.crawler.util.HtmlParser.createNoticeInfoHtml;
+
 import io.jyp.crawler.entity.Member;
 import io.jyp.crawler.repository.MemberRepository;
 import jakarta.mail.MessagingException;
@@ -95,48 +97,4 @@ public class NoticeCrawlerService {
             }
         }
     }
-
-    // 이메일 내용 생성 메서드
-    private String createNoticeInfoHtml(String title, String link, String author, String date) {
-        return """
-        <html>
-            <body>
-                <h2 style="color: #4CAF50; font-family: Arial, sans-serif;">새로운 공지사항이 있습니다!</h2>
-                <table style="border-collapse: collapse; width: 100%%; font-family: Arial, sans-serif;">
-                    <tr>
-                        <th style="border: 1px solid #ddd; padding: 8px; text-align: left;">제목</th>
-                        <td style="border: 1px solid #ddd; padding: 8px;">%s</td>
-                    </tr>
-                    <tr style="background-color: #f2f2f2;">
-                        <th style="border: 1px solid #ddd; padding: 8px; text-align: left;">URL</th>
-                        <td style="border: 1px solid #ddd; padding: 8px;">
-                            <a href="%s" style="text-decoration: none; color: #2196F3;">공지사항 바로가기</a>
-                        </td>
-                    </tr>
-                    <tr>
-                        <th style="border: 1px solid #ddd; padding: 8px; text-align: left;">작성자</th>
-                        <td style="border: 1px solid #ddd; padding: 8px;">%s</td>
-                    </tr>
-                    <tr style="background-color: #f2f2f2;">
-                        <th style="border: 1px solid #ddd; padding: 8px; text-align: left;">등록일</th>
-                        <td style="border: 1px solid #ddd; padding: 8px;">%s</td>
-                    </tr>
-                </table>
-                <hr>
-                <p style="font-size: 0.9em; color: #666;">이 메일은 자동으로 발송되었습니다.</p>
-                <p style="font-size: 0.9em; color: #666;">
-                    문의사항이 있으시면 
-                    <a href="mailto:ju0_park@naver.com" style="text-decoration: none; color: #2196F3;">이메일</a>로 연락해 주세요.
-                </p>
-                <p style="font-size: 0.9em; color: #666;">
-                    GitHub: <a href="https://github.com/jyp-on" style="text-decoration: none; color: #2196F3;">https://github.com/jyp-on</a>
-                </p>
-                <p style="font-size: 0.9em; color: #666;">
-                    Email: <a href="mailto:ju0_park@naver.com" style="text-decoration: none; color: #2196F3;">ju0_park@naver.com</a>
-                </p>
-            </body>
-        </html>
-        """.formatted(title, link, author, date);
-    }
-
 }

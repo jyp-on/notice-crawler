@@ -2,21 +2,20 @@ package io.jyp.crawler.service;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+import jakarta.mail.MessagingException;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.annotation.Rollback;
 
 @SpringBootTest
-class NoticeCrawlerServiceTest {
+class EmailServiceTest {
 
     @Autowired
-    private NoticeCrawlerService noticeCrawlerService;
+    EmailService emailService;
 
     @Test
-    @Rollback(false)
-    void crawling() {
-        noticeCrawlerService.checkMainNotice();
-//        noticeCrawlerService.checkSoftNotice();
+    void emailVerify() throws MessagingException {
+        String email = "ju0_park@naver.com";
+        emailService.sendEmailVerification(email);
     }
 }

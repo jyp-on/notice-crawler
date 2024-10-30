@@ -21,13 +21,11 @@ public class NoticeService {
             .orElse(Member.builder()
                 .name(request.getName())
                 .email(request.getEmail())
+                .noticeType(request.getNoticeType())
+                .noticeFlag(true)
                 .build());
 
-        // 구독 설정
-        member.setNoticeType(request.getNoticeType());
-        member.setNoticeFlag(true); // 구독 활성화
-        memberRepository.save(member); // 저장
-
+        memberRepository.save(member);
         return "구독이 성공적으로 생성되었습니다.";
     }
 }

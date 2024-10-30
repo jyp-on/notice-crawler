@@ -14,6 +14,4 @@ public class SubscriptionRequest {
     @NotNull
     private String email;
     private boolean NoticeFlag;
-    private String name;
-    private String noticeType;
 }

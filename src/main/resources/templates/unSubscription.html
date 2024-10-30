@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <title>구독 취소 페이지</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <link rel="stylesheet" href="/style.css">
+  <script src="/script.js" defer></script>
+</head>
+<body>
+<!-- 돌아가기 화살표 -->
+<a href="/" class="back-arrow"><i class="fa fa-arrow-left"></i></a>
+
+<div class="container">
+  <h1>구독 취소</h1>
+  <form onsubmit="handleUnsubscriptionRequest(event);">
+    <label for="unsubscribeEmail">이메일</label>
+    <input type="email" id="unsubscribeEmail" name="email" placeholder="이메일 입력" required>
+    <button type="submit"><i class="fa fa-times-circle"></i> 구독 취소 요청</button>
+  </form>
+  <!-- 구독 취소 메시지 표시 영역 -->
+  <div id="unsubscriptionMessage" class="message"></div>
+  <div id="unsubscriptionTokenSection" class="hidden">
+    <form onsubmit="handleVerifyUnsubscription(event);">
+      <label for="unsubscribeToken">인증 번호</label>
+      <input type="text" id="unsubscribeToken" name="token" placeholder="인증 번호 입력" required>
+      <button type="submit"><i class="fa fa-check-circle"></i> 구독 취소 확인</button>
+    </form>
+  </div>
+</div>
+</body>
+</html>

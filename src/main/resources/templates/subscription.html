@@ -1,192 +1,32 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-  <title>구독 관리 페이지</title>
+  <title>구독 신청 페이지</title>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.1/normalize.min.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      background-color: #f4f4f4;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      height: 100vh;
-    }
-    .container {
-      background-color: #ffffff;
-      padding: 20px;
-      border-radius: 8px;
-      box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
-      max-width: 400px;
-      width: 100%;
-    }
-    h1 {
-      text-align: center;
-      color: #333;
-    }
-    form {
-      display: flex;
-      flex-direction: column;
-      margin-bottom: 20px;
-    }
-    label {
-      margin-top: 10px;
-      font-weight: bold;
-    }
-    input[type="email"], input[type="text"] {
-      padding: 10px;
-      margin-top: 5px;
-      border: 1px solid #ddd;
-      border-radius: 4px;
-    }
-    button {
-      margin-top: 15px;
-      padding: 10px;
-      background-color: #007bff;
-      color: #ffffff;
-      border: none;
-      border-radius: 4px;
-      cursor: pointer;
-      transition: background-color 0.3s;
-    }
-    button:hover {
-      background-color: #0056b3;
-    }
-    .fa {
-      margin-right: 5px;
-    }
-    .hidden {
-      display: none;
-    }
-  </style>
-  <script>
-    function handleSubscriptionRequest(event) {
-      event.preventDefault();
-      document.getElementById('subscriptionTokenSection').classList.remove('hidden');
-      const email = document.getElementById('subscribeEmail').value;
-
-      fetch('/api/subscription/request', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/x-www-form-urlencoded',
-        },
-        body: new URLSearchParams({ email: email })
-      })
-          .then(response => response.text())
-          .then(data => {
-            alert(data);
-          })
-          .catch(error => {
-            console.error('Error:', error);
-            alert('구독 요청 중 오류가 발생했습니다.');
-          });
-    }
-
-    function handleVerifySubscription(event) {
-      event.preventDefault();
-      const email = document.getElementById('subscribeEmail').value;
-      const token = document.getElementById('subscribeToken').value;
-
-      fetch('/api/subscription', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/x-www-form-urlencoded',
-        },
-        body: new URLSearchParams({ email: email, token: token })
-      })
-          .then(response => response.text())
-          .then(data => {
-            alert(data);
-          })
-          .catch(error => {
-            console.error('Error:', error);
-            alert('구독 확인 중 오류가 발생했습니다.');
-          });
-    }
-
-    function handleUnsubscriptionRequest(event) {
-      event.preventDefault();
-      document.getElementById('unsubscriptionTokenSection').classList.remove('hidden');
-      const email = document.getElementById('unsubscribeEmail').value;
-
-      fetch('/api/subscription/cancel/request', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/x-www-form-urlencoded',
-        },
-        body: new URLSearchParams({ email: email })
-      })
-          .then(response => response.text())
-          .then(data => {
-            alert(data);
-          })
-          .catch(error => {
-            console.error('Error:', error);
-            alert('구독 취소 요청 중 오류가 발생했습니다.');
-          });
-    }
-
-    function handleVerifyUnsubscription(event) {
-      event.preventDefault();
-      const email = document.getElementById('unsubscribeEmail').value;
-      const token = document.getElementById('unsubscribeToken').value;
-
-      fetch('/api/subscription/cancel', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/x-www-form-urlencoded',
-        },
-        body: new URLSearchParams({ email: email, token: token })
-      })
-          .then(response => response.text())
-          .then(data => {
-            alert(data);
-          })
-          .catch(error => {
-            console.error('Error:', error);
-            alert('구독 취소 확인 중 오류가 발생했습니다.');
-          });
-    }
-  </script>
+  <link rel="stylesheet" href="/style.css">
+  <script src="/script.js" defer></script>
 </head>
 <body>
+<!-- 돌아가기 화살표 -->
+<a href="/" class="back-arrow"><i class="fa fa-arrow-left"></i></a>
+
 <div class="container">
-  <h1>구독 관리</h1>
-
-  <section>
-    <h2>구독 신청</h2>
-    <form onsubmit="handleSubscriptionRequest(event);">
-      <label for="subscribeEmail">이메일</label>
-      <input type="email" id="subscribeEmail" name="email" placeholder="이메일 입력" required>
-      <button type="submit"><i class="fa fa-paper-plane"></i> 구독 요청</button>
+  <h1>구독 신청</h1>
+  <form onsubmit="handleSubscriptionRequest(event);">
+    <label for="subscribeEmail">이메일</label>
+    <input type="email" id="subscribeEmail" name="email" placeholder="이메일 입력" required>
+    <button type="submit"><i class="fa fa-paper-plane"></i> 구독 요청</button>
+  </form>
+  <div id="subscriptionMessage" class="message"></div>
+  <div id="subscriptionTokenSection" class="hidden">
+    <form onsubmit="handleVerifySubscription(event);">
+      <label for="subscribeToken">인증 번호</label>
+      <input type="text" id="subscribeToken" name="token" placeholder="인증 번호 입력" required>
+      <button type="submit"><i class="fa fa-check-circle"></i> 구독 확인</button>
     </form>
-    <div id="subscriptionTokenSection" class="hidden">
-      <form onsubmit="handleVerifySubscription(event);">
-        <label for="subscribeToken">인증 번호</label>
-        <input type="text" id="subscribeToken" name="token" placeholder="인증 번호 입력" required>
-        <button type="submit"><i class="fa fa-check-circle"></i> 구독 확인</button>
-      </form>
-    </div>
-  </section>
-
-  <section>
-    <h2>구독 취소 요청</h2>
-    <form onsubmit="handleUnsubscriptionRequest(event);">
-      <label for="unsubscribeEmail">이메일</label>
-      <input type="email" id="unsubscribeEmail" name="email" placeholder="이메일 입력" required>
-      <button type="submit"><i class="fa fa-times-circle"></i> 구독 취소 요청</button>
-    </form>
-    <div id="unsubscriptionTokenSection" class="hidden">
-      <form onsubmit="handleVerifyUnsubscription(event);">
-        <label for="unsubscribeToken">인증 번호</label>
-        <input type="text" id="unsubscribeToken" name="token" placeholder="인증 번호 입력" required>
-        <button type="submit"><i class="fa fa-check-circle"></i> 구독 취소 확인</button>
-      </form>
-    </div>
-  </section>
+  </div>
 </div>
 </body>
 </html>

@@ -51,16 +51,15 @@ public class MemberService {
     @Transactional
     public String sendCancellationEmail(String email) {
         Optional<Member> member = memberRepository.findByEmail(email);
-        if (member.isEmpty() || !member.get().isNoticeFlag()) {
-            throw new IllegalArgumentException("구독 중인 이메일이 아닙니다.");
-        }
+        if (member.isEmpty()) throw new IllegalArgumentException("구독 중인 이메일이 아닙니다.");
+        if (!member.get().isNoticeFlag()) throw new IllegalArgumentException("이미 구독을 취소하였습니다.");
 
         try {
             emailService.sendEmailVerification(email);
         } catch (MessagingException e) {
             throw new RuntimeException("이메일 전송에 실패했습니다.", e);
         }
-        return "구독 취소 확인 이메일을 전송했습니다.";
+        return "이메일을 전송했습니다.";
     }
 
     @Transactional

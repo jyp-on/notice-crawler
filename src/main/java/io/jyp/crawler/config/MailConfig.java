@@ -40,7 +40,7 @@ public class MailConfig {
         props.put("mail.smtp.auth", "true");
         props.put("mail.smtp.starttls.enable", "true");
         props.put("mail.smtp.starttls.required", "true");
-        props.put("mail.debug", "true"); // 디버그 활성화
+        props.put("mail.debug", "false"); // 디버그 활성화
 
         return mailSender;
     }

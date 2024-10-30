@@ -8,7 +8,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 import java.io.IOException;
@@ -45,9 +44,8 @@ public class NoticeCrawlerService {
                 redisTemplate.opsForValue().set("notice:main", noticeId); // 새로운 공지 ID 갱신
                 String noticeInfo = createNoticeInfoHtml(title, link, author, date); // 이메일 내용 생성
                 notifyMainNoticeMembers(noticeInfo, "MAIN");
-                log.info("새로운 공지사항이 발견되어 이메일을 발송했습니다.");
+                log.info("[MAIN] 새로운 공지사항이 발견되어 이메일을 발송했습니다.");
             } else {
-                log.info("최신 공지사항 ID : " + lastNoticeId);
                 log.info("새로운 공지사항이 없습니다. 공지 ID : " + noticeId);
             }
         } catch (IOException e) {
@@ -75,9 +73,8 @@ public class NoticeCrawlerService {
                 redisTemplate.opsForValue().set("notice:soft", noticeId); // 새로운 공지 ID 갱신
                 String noticeInfo = createNoticeInfoHtml(title, link, "관리자", date); // 이메일 내용 생성
                 notifyMainNoticeMembers(noticeInfo, "SOFT"); // 알림 발송
-                log.info("새로운 공지사항이 발견되어 이메일을 발송했습니다.");
+                log.info("[SOFT] 새로운 공지사항이 발견되어 이메일을 발송했습니다.");
             } else {
-                log.info("최신 공지사항 ID : " + lastNoticeId);
                 log.info("새로운 공지사항이 없습니다. 공지 ID : " + noticeId);
             }
         } catch (IOException e) {

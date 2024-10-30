@@ -1,6 +1,5 @@
 package io.jyp.crawler.service;
 
-import io.jyp.crawler.dto.MemberRequest;
 import io.jyp.crawler.dto.SubscriptionRequest;
 import io.jyp.crawler.entity.Member;
 import io.jyp.crawler.repository.MemberRepository;
@@ -15,7 +14,7 @@ public class MemberService {
     private final MemberRepository memberRepository;
 
     @Transactional
-    public String updateMember(MemberRequest request) {
+    public String updateMember(SubscriptionRequest request) {
         Member member = memberRepository.findByEmail(request.getEmail())
             .orElseThrow(() -> new IllegalArgumentException("사용자를 찾을 수 없습니다"));
 

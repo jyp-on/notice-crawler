@@ -5,11 +5,11 @@ import static io.jyp.crawler.util.HtmlParser.createNoticeRowHtml;
 
 import io.jyp.crawler.entity.Member;
 import io.jyp.crawler.repository.MemberRepository;
+import io.jyp.crawler.service.EmailService;
 import jakarta.mail.MessagingException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -21,11 +21,16 @@ import java.util.List;
 
 @Slf4j
 @Service
-@RequiredArgsConstructor
 public class NoticeCrawlerService {
 
     private final MemberRepository memberRepository;
     private final EmailService emailService;
+
+    // 생성자를 통한 의존성 주입
+    public NoticeCrawlerService(MemberRepository memberRepository, EmailService emailService) {
+        this.memberRepository = memberRepository;
+        this.emailService = emailService;
+    }
 
     public void checkTodayMainNotice() {
         try {
@@ -59,6 +64,7 @@ public class NoticeCrawlerService {
             String date = notice.select(".col-5 span").text().trim().replace("등록일 ", "");
 
             if (isToday(date)) {
+//            if(isToday(date, LocalDate.of(2024, 10, 31))) { // Test
                 String title = notice.select(".col-2 a").text().trim();
                 String link = notice.select(".col-2 a").attr("href").trim();
                 String author = notice.select(".col-3 span").text().trim().replace("작성자 ", "");
@@ -70,9 +76,13 @@ public class NoticeCrawlerService {
     }
 
     public boolean isToday(String date) {
+        return isToday(date, LocalDate.now());
+    }
+
+    public boolean isToday(String date, LocalDate currentDate) {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
         LocalDate noticeDate = LocalDate.parse(date, formatter);
-        return noticeDate.isEqual(LocalDate.now());
+        return noticeDate.isEqual(currentDate);
     }
 
     private void notifyNoticeMembers(String noticeInfo, String noticeType) {

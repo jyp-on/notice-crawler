@@ -15,9 +15,9 @@ public class MyScheduler {
 
     private final NoticeCrawlerService crawlerService;
 
-//     매일 오후 6시에 당일 공지사항 전송
-//    @Scheduled(cron = "0 0 18 * * ?")
-//    public void crawlingJob() {
-//        crawlerService.checkLatestMainNotice();
-//    }
+    // 매일 20시에 당일 공지사항 전송
+    @Scheduled(cron = "0 0 20 * * ?")
+    public void crawlingJob() {
+        crawlerService.checkTodayMainNotice();
+    }
 }

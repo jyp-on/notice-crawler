@@ -48,7 +48,7 @@ public class NoticeCrawlerService {
                 notifyMainNoticeMembers(noticeInfo, "MAIN");
                 log.info("[MAIN] 새로운 공지사항이 발견되어 이메일을 발송했습니다.");
             } else {
-                log.info("새로운 공지사항이 없습니다. 공지 ID : " + noticeId);
+                log.info("[MAIN] 새로운 공지사항이 없습니다. 공지 ID : " + noticeId);
             }
         } catch (IOException e) {
             log.error("공지사항 페이지를 불러오는 중 오류 발생", e);
@@ -77,7 +77,7 @@ public class NoticeCrawlerService {
                 notifyMainNoticeMembers(noticeInfo, "SOFT"); // 알림 발송
                 log.info("[SOFT] 새로운 공지사항이 발견되어 이메일을 발송했습니다.");
             } else {
-                log.info("새로운 공지사항이 없습니다. 공지 ID : " + noticeId);
+                log.info("[SOFT] 새로운 공지사항이 없습니다. 공지 ID : " + noticeId);
             }
         } catch (IOException e) {
             log.error("공지사항 페이지를 불러오는 중 오류 발생", e);

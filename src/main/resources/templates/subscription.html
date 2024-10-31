@@ -19,7 +19,7 @@
     <input type="email" id="subscribeEmail" name="email" placeholder="이메일 입력" required>
     <button type="submit"><i class="fa fa-paper-plane"></i> 구독 요청</button>
   </form>
-  <div id="subscriptionMessage" class="message"></div>
+
   <div id="subscriptionTokenSection" class="hidden">
     <form onsubmit="handleVerifySubscription(event);">
       <label for="subscribeToken">인증 번호</label>
@@ -27,6 +27,7 @@
       <button type="submit"><i class="fa fa-check-circle"></i> 구독 확인</button>
     </form>
   </div>
+  <div id="subscriptionMessage" class="message"></div>
 </div>
 </body>
 </html>

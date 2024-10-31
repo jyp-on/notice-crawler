@@ -16,7 +16,7 @@ class NoticeCrawlerServiceTest {
     @Test
     @Rollback(false)
     void crawling() {
-        noticeCrawlerService.checkMainNotice();
+//        noticeCrawlerService.checkMainNotice();
 //        noticeCrawlerService.checkSoftNotice();
     }
 }

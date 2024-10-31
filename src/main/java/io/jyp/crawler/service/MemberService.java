@@ -5,10 +5,12 @@ import io.jyp.crawler.repository.MemberRepository;
 import jakarta.mail.MessagingException;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
+@Slf4j
 @RequiredArgsConstructor
 public class MemberService {
 
@@ -43,6 +45,7 @@ public class MemberService {
 
             member.setNoticeFlag(true);
             memberRepository.save(member);
+            log.info("[구독] " + email);
             return "구독이 성공적으로 완료되었습니다.";
         }
         return "유효하지 않은 인증 토큰입니다.";
@@ -70,6 +73,7 @@ public class MemberService {
                 .orElseThrow(() -> new IllegalArgumentException("등록된 이메일이 없습니다."));
             member.setNoticeFlag(false);
             memberRepository.save(member);
+            log.info("[구독취소] " + email);
             return "구독이 성공적으로 취소되었습니다.";
         }
         return "유효하지 않은 인증 토큰입니다.";

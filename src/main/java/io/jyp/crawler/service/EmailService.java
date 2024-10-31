@@ -5,8 +5,9 @@ import io.jyp.crawler.util.HtmlParser;
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
 import java.time.Duration;
-import java.util.UUID;
+import java.util.Random;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.mail.javamail.JavaMailSender;
@@ -15,6 +16,7 @@ import org.springframework.stereotype.Service;
 
 
 @Service
+@Slf4j
 @RequiredArgsConstructor
 public class EmailService {
 
@@ -37,8 +39,9 @@ public class EmailService {
         mailSender.send(message);
     }
 
-    public String sendEmailVerification(String email) throws MessagingException {
-        String authCode = UUID.randomUUID().toString();
+    public void sendEmailVerification(String email) throws MessagingException {
+        Random random = new Random();
+        String authCode = String.format("%06d", random.nextInt(1000000));
         redisTemplate.opsForValue().set("email:" + email, authCode, Duration.ofMinutes(5));
 
         MimeMessage message = mailSender.createMimeMessage();
@@ -48,8 +51,7 @@ public class EmailService {
         helper.setSubject("[jyp.crawler] 인증번호 발송");
         helper.setText(HtmlParser.createVerifyEmailHtml(authCode), true); // HTML 본문 설정
         mailSender.send(message);
-
-        return "인증 이메일이 발송되었습니다.";
+        log.info("[인증번호 발송] {}", email);
     }
 
     public boolean verifyEmail(String email, String code) {

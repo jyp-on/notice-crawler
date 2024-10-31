@@ -33,3 +33,11 @@
 - **이메일 전송**: SMTP 서버 (gmail)
 - **배포 환경**: 라즈베리파이 서버 (Ubuntu OS)
 - **기타**: DDNS (no-ip) - 동적 IP 관리를 위한 도메인 매핑
+
+## 시연
+<div style="display: flex; flex-wrap: wrap; gap: 10px;">
+    <img src="https://github.com/user-attachments/assets/fd1b1958-1f8a-485c-984a-6a55c0384dd0" width="300" alt="시연 이미지 1"><br/>
+    <img src="https://github.com/user-attachments/assets/c2ed3253-20d4-4328-8b45-aaaa7d9fdde6" width="300" alt="시연 이미지 2"><br/>
+    <img src="https://github.com/user-attachments/assets/d1e6ed8f-27ff-439d-a198-78515de2ac69" width="300" alt="시연 이미지 3"><br/>
+    <img src="https://github.com/user-attachments/assets/70d778f6-414e-45d6-90dd-613992b64376" width="300" alt="시연 이미지 4">
+</div>

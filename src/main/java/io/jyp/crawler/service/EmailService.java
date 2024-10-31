@@ -31,7 +31,7 @@ public class EmailService {
 
         helper.setFrom(senderEmail);
         helper.setTo(member.getEmail());
-        helper.setSubject("새로운 공지사항이 올라왔습니다");
+        helper.setSubject("[jyp.crawler] 오늘의 공지사항 전송드립니다.");
         helper.setText(noticeInfo, true); // HTML 본문 설정
 
         mailSender.send(message);
@@ -41,7 +41,6 @@ public class EmailService {
         String authCode = UUID.randomUUID().toString();
         redisTemplate.opsForValue().set("email:" + email, authCode, Duration.ofMinutes(5));
 
-        // TODO: 실제 이메일 발송 로직 추가 (메일 서버와의 연동 필요)
         MimeMessage message = mailSender.createMimeMessage();
         MimeMessageHelper helper = new MimeMessageHelper(message, "utf-8");
         helper.setFrom(senderEmail);

@@ -15,10 +15,9 @@ public class MyScheduler {
 
     private final NoticeCrawlerService crawlerService;
 
-//     매일 오전 9시부터 오후 6시까지 1분 간격으로 실행
-    @Scheduled(cron = "0 */1 9-18 * * ?")
-    public void crawlingJob() {
-        crawlerService.checkMainNotice();
-//        crawlerService.checkSoftNotice();
-    }
+//     매일 오후 6시에 당일 공지사항 전송
+//    @Scheduled(cron = "0 0 18 * * ?")
+//    public void crawlingJob() {
+//        crawlerService.checkLatestMainNotice();
+//    }
 }

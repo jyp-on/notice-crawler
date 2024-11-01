@@ -22,7 +22,7 @@
 ## 기술 스택
 
 - **백엔드**: Spring Boot, Java, JPA/Hibernate
-- **데이터베이스**: MySQL, Redis (최신 공지사항 ID 저장용)
+- **데이터베이스**: MySQL, Redis (이메일 인증시 암호 임시 저장용)
 - **이메일 전송**: SMTP 서버 (gmail)
 - **배포 환경**: 라즈베리파이 서버 (Ubuntu OS)
 - **기타**: DDNS (no-ip) - 동적 IP 관리를 위한 도메인 매핑

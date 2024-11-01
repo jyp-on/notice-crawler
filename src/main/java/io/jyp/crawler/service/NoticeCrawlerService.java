@@ -5,11 +5,13 @@ import static io.jyp.crawler.util.HtmlParser.createNoticeRowHtml;
 
 import io.jyp.crawler.entity.Member;
 import io.jyp.crawler.repository.MemberRepository;
-import io.jyp.crawler.service.EmailService;
 import jakarta.mail.MessagingException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import lombok.extern.slf4j.Slf4j;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -23,6 +25,7 @@ import java.util.List;
 @Service
 public class NoticeCrawlerService {
 
+    private final ExecutorService emailExecutor = Executors.newFixedThreadPool(10); // 스레드 개수
     private final MemberRepository memberRepository;
     private final EmailService emailService;
 
@@ -86,14 +89,21 @@ public class NoticeCrawlerService {
     }
 
     private void notifyNoticeMembers(String noticeInfo, String noticeType) {
-        List<Member> mainNoticeMembers = memberRepository.findByNoticeTypeAndNoticeFlag(noticeType, true);
-        for (Member member : mainNoticeMembers) {
-            try {
-                emailService.sendEmail(member, noticeInfo);
-                log.info("[이메일 발송] {}", member.getEmail());
-            } catch (MessagingException e) {
-                log.error("[이메일 발송 실패] {}", member.getEmail(), e);
-            }
-        }
+        List<Member> mainNoticeMembers = memberRepository.findByNoticeTypeAndNoticeFlagOrderByIdDesc(noticeType, true);
+
+        // CompletableFuture 리스트를 만들어 모든 작업이 완료될 때까지 기다림
+        List<CompletableFuture<Void>> futures = mainNoticeMembers.stream()
+            .map(member -> CompletableFuture.runAsync(() -> {
+                try {
+                    emailService.sendEmail(member, noticeInfo);
+                    log.info("[이메일 발송] {}", member.getEmail());
+                } catch (MessagingException e) {
+                    log.error("[이메일 발송 실패] {}", member.getEmail(), e);
+                }
+            }, emailExecutor))
+            .toList();
+
+        // 모든 작업이 끝날 때까지 기다림
+        CompletableFuture.allOf(futures.toArray(new CompletableFuture[0])).join();
     }
 }

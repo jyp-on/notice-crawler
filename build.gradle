@@ -19,6 +19,14 @@ configurations {
 	}
 }
 
+test {
+	// 테스트 실행 시 로그 레벨을 INFO로 설정
+	testLogging {
+		events "passed", "skipped", "failed"
+		showStandardStreams = true // 표준 출력 스트림을 항상 표시
+	}
+}
+
 repositories {
 	mavenCentral()
 }
@@ -37,6 +45,8 @@ dependencies {
 	annotationProcessor 'org.projectlombok:lombok'
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+	testCompileOnly 'org.projectlombok:lombok'
+	testAnnotationProcessor 'org.projectlombok:lombok'
 }
 
 tasks.named('test') {

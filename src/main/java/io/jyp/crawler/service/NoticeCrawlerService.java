@@ -25,7 +25,7 @@ import java.util.List;
 @Service
 public class NoticeCrawlerService {
 
-    private final ExecutorService emailExecutor = Executors.newFixedThreadPool(10); // 스레드 개수
+    private final ExecutorService emailExecutor = Executors.newFixedThreadPool(30); // 스레드 개수
     private final MemberRepository memberRepository;
     private final EmailService emailService;
 

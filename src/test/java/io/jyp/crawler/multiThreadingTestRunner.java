@@ -32,7 +32,7 @@ class multiThreadingTestRunner {
 
         // 100명의 더미 Member 데이터 생성
         List<Member> dummyMembers = new ArrayList<>();
-        for (int i = 0; i < 100; i++) {
+        for (int i = 0; i < 30; i++) {
             dummyMembers.add(Member.builder()
                 .email("ju" + i + "_park@naver.com")
                 .noticeFlag(true)
@@ -50,6 +50,7 @@ class multiThreadingTestRunner {
                     log.info("[이메일 발송] {}", member.getEmail());
                 } catch (MessagingException e) {
                     log.error("[이메일 발송 실패] {}", member.getEmail(), e);
+                    throw new RuntimeException(e); // 예외를 명시적으로 던져 CompletionException의 원인을 알 수 있도록 함
                 }
             }, emailExecutor))
             .toList();

@@ -25,7 +25,7 @@ import java.util.List;
 @Service
 public class NoticeCrawlerService {
 
-    private final ExecutorService emailExecutor = Executors.newFixedThreadPool(30); // 스레드 개수
+    private final ExecutorService emailExecutor = Executors.newFixedThreadPool(10); // Ubuntu 서버에서 테스트 결과 적정개수 10개
     private final MemberRepository memberRepository;
     private final EmailService emailService;
 

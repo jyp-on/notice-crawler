@@ -23,7 +23,7 @@ class multiThreadingTestRunner {
 
     @Test
     void multiThreadingTest() {
-        runTestWithThreads(20);
+        runTestWithThreads(10);
     }
 
     // EmailService Mocking 하여 멀티스레딩 테스트

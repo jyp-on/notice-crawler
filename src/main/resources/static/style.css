@@ -92,3 +92,9 @@ button:hover, .nav-button:hover {
 .back-arrow:hover {
   color: #007bff;
 }
+
+button:disabled, .nav-button:disabled {
+  background-color: #cccccc; /* 비활성화된 버튼의 배경색 */
+  cursor: not-allowed; /* 커서를 "금지" 모양으로 변경 */
+}
+

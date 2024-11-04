@@ -13,6 +13,11 @@ function handleSubscriptionRequest(event) {
   event.preventDefault();
   const email = document.getElementById('subscribeEmail').value;
   const messageElement = document.getElementById('subscriptionMessage');
+  const submitButton = event.target.querySelector('button');
+
+  // 버튼 비활성화
+  submitButton.disabled = true;
+  submitButton.classList.add('disabled');
 
   // 요청 직후 메시지 업데이트
   displayAlert(messageElement, '구독 요청 중입니다. 잠시만 기다려주세요...', '');
@@ -37,33 +42,11 @@ function handleSubscriptionRequest(event) {
       .catch(error => {
         console.error('Error:', error);
         displayAlert(messageElement, '구독 요청 중 오류가 발생했습니다.', 'error');
-      });
-}
-
-function handleVerifySubscription(event) {
-  event.preventDefault();  // 폼 제출 방지
-  const email = document.getElementById('subscribeEmail').value;
-  const token = document.getElementById('subscribeToken').value;
-  const messageElement = document.getElementById('subscriptionMessage');
-
-  // 확인 요청 중 메시지 업데이트
-  displayAlert(messageElement, '인증 번호 확인 중입니다...', '');
-
-  // 서버에 비동기 요청 보내기
-  fetch('/api/subscription', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/x-www-form-urlencoded',
-    },
-    body: new URLSearchParams({ email: email, token: token })
-  })
-      .then(response => response.text())
-      .then(data => {
-        displayAlert(messageElement, data, 'success');
       })
-      .catch(error => {
-        console.error('Error:', error);
-        displayAlert(messageElement, '인증 번호 확인 중 오류가 발생했습니다.', 'error');
+      .finally(() => {
+        // 요청 완료 후 버튼 다시 활성화
+        submitButton.disabled = false;
+        submitButton.classList.remove('disabled');
       });
 }
 
@@ -71,6 +54,11 @@ function handleUnsubscriptionRequest(event) {
   event.preventDefault();
   const email = document.getElementById('unsubscribeEmail').value;
   const messageElement = document.getElementById('unsubscriptionMessage');
+  const submitButton = event.target.querySelector('button');
+
+  // 버튼 비활성화
+  submitButton.disabled = true;
+  submitButton.classList.add('disabled');
 
   // 요청 직후 메시지 업데이트
   displayAlert(messageElement, '구독 취소 요청 중입니다. 메일을 확인해주세요.', '');
@@ -95,6 +83,48 @@ function handleUnsubscriptionRequest(event) {
       .catch(error => {
         console.error('Error:', error);
         displayAlert(messageElement, '구독 취소 요청 중 오류가 발생했습니다.', 'error');
+      })
+      .finally(() => {
+        // 요청 완료 후 버튼 다시 활성화
+        submitButton.disabled = false;
+        submitButton.classList.remove('disabled');
+      });
+}
+
+function handleVerifySubscription(event) {
+  event.preventDefault();  // 폼 제출 방지
+  const email = document.getElementById('subscribeEmail').value;
+  const token = document.getElementById('subscribeToken').value;
+  const messageElement = document.getElementById('subscriptionMessage');
+  const submitButton = event.target.querySelector('button');
+
+  // 버튼 비활성화
+  submitButton.disabled = true;
+  submitButton.classList.add('disabled');
+
+  // 확인 요청 중 메시지 업데이트
+  displayAlert(messageElement, '인증 번호 확인 중입니다...', '');
+
+  // 서버에 비동기 요청 보내기
+  fetch('/api/subscription', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/x-www-form-urlencoded',
+    },
+    body: new URLSearchParams({ email: email, token: token })
+  })
+      .then(response => response.text())
+      .then(data => {
+        displayAlert(messageElement, data, 'success');
+      })
+      .catch(error => {
+        console.error('Error:', error);
+        displayAlert(messageElement, '인증 번호 확인 중 오류가 발생했습니다.', 'error');
+      })
+      .finally(() => {
+        // 요청 완료 후 버튼 다시 활성화
+        submitButton.disabled = false;
+        submitButton.classList.remove('disabled');
       });
 }
 
@@ -103,6 +133,11 @@ function handleVerifyUnsubscription(event) {
   const email = document.getElementById('unsubscribeEmail').value;
   const token = document.getElementById('unsubscribeToken').value;
   const messageElement = document.getElementById('unsubscriptionMessage');
+  const submitButton = event.target.querySelector('button');
+
+  // 버튼 비활성화
+  submitButton.disabled = true;
+  submitButton.classList.add('disabled');
 
   // 확인 요청 중 메시지 업데이트
   displayAlert(messageElement, '구독 취소 확인 중입니다...', '');
@@ -122,5 +157,10 @@ function handleVerifyUnsubscription(event) {
       .catch(error => {
         console.error('Error:', error);
         displayAlert(messageElement, '구독 취소 확인 중 오류가 발생했습니다.', 'error');
+      })
+      .finally(() => {
+        // 요청 완료 후 버튼 다시 활성화
+        submitButton.disabled = false;
+        submitButton.classList.remove('disabled');
       });
 }

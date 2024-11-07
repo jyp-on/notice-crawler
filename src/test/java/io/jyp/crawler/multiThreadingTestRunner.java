@@ -36,7 +36,6 @@ class multiThreadingTestRunner {
             dummyMembers.add(Member.builder()
                 .email("ju" + i + "_park@naver.com")
                 .noticeFlag(true)
-                .noticeType("MAIN")
                 .build());
         }
 

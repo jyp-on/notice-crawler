@@ -18,6 +18,6 @@ public class MyScheduler {
     // 매일 20시에 당일 공지사항 전송
     @Scheduled(cron = "0 0 20 * * ?")
     public void crawlingJob() {
-        crawlerService.checkTodayMainNotice();
+        crawlerService.checkTodayNotice();
     }
 }

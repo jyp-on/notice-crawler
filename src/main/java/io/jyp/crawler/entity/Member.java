@@ -17,7 +17,7 @@ import java.util.List;
 @NoArgsConstructor
 @ToString
 @Entity
-public class Member {
+public class Member extends BaseTimeEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -29,7 +29,4 @@ public class Member {
     @Column(nullable = false)
     private boolean noticeFlag; // 알림 여부
 
-    // MAIN, SOFT
-    @Column(nullable = false)
-    private String noticeType;
 }

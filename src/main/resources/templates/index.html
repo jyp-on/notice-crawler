@@ -105,8 +105,24 @@
 
 <div class="container">
   <h1>구독 관리</h1>
+
+  <!-- 현재 구독자 수와 제한 안내 -->
+  <div class="subscriber-count">
+    <p>
+      현재 구독자 수:
+      <span th:text="${subscriberCount}"></span>명
+      <br/>
+      최대 500명까지 구독이 가능합니다.
+    </p>
+  </div>
+
   <div class="button-container">
-    <a href="/subscription" class="nav-button"><i class="fa fa-paper-plane"></i> 구독 신청</a>
+    <a href="/subscription" class="nav-button" th:if="${subscriberCount < 500}">
+      <i class="fa fa-paper-plane"></i> 구독 신청
+    </a>
+    <p th:if="${subscriberCount >= 500}" style="color: red; font-size: 14px;">
+      구독 인원이 최대치에 도달하여 구독 신청이 불가능합니다.
+    </p>
     <a href="/un-subscription" class="nav-button"><i class="fa fa-times-circle"></i> 구독 취소</a>
   </div>
 

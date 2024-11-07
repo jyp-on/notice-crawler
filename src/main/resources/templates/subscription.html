@@ -14,17 +14,24 @@
 
 <div class="container">
   <h1>구독 신청</h1>
+  <!-- 현재 구독자 수와 제한 안내 -->
+  <div class="subscriber-count">
+    <p>
+      현재 구독자 수:
+      <span th:text="${subscriberCount}"></span>명
+      <br/>
+      최대 500명까지 구독이 가능합니다.
+    </p>
+  </div>
   <form onsubmit="handleSubscriptionRequest(event);">
-    <label for="subscribeEmail">이메일</label>
     <input type="email" id="subscribeEmail" name="email" placeholder="이메일 입력" required>
-    <button type="submit"><i class="fa fa-paper-plane"></i> 구독 요청</button>
+    <button type="submit"><i class="fa fa-paper-plane"></i> 구독 신청</button>
   </form>
 
   <div id="subscriptionTokenSection" class="hidden">
     <form onsubmit="handleVerifySubscription(event);">
-      <label for="subscribeToken">인증 번호</label>
       <input type="text" id="subscribeToken" name="token" placeholder="인증 번호 입력" required>
-      <button type="submit"><i class="fa fa-check-circle"></i> 구독 확인</button>
+      <button type="submit"><i class="fa fa-check-circle"></i> 인증 완료</button>
     </form>
   </div>
   <div id="subscriptionMessage" class="message"></div>

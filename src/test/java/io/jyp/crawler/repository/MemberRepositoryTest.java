@@ -1,4 +1,4 @@
-package io.jyp.crawler.service;
+package io.jyp.crawler.repository;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -7,13 +7,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
-class NoticeCrawlerServiceTest {
+class MemberRepositoryTest {
 
     @Autowired
-    private NoticeCrawlerService noticeCrawlerService;
+    private MemberRepository memberRepository;
 
     @Test
-    void crawling() {
-        noticeCrawlerService.checkTodayNotice();
+    void countByNoticeFlag() {
+        long count = memberRepository.countByNoticeFlag(true);
+        System.out.println(count);
     }
 }

@@ -18,10 +18,20 @@ public class MemberService {
     private final EmailService emailService;
 
     @Transactional
+    public long getSubscribeMemberCount() {
+        return memberRepository.countByNoticeFlag(true);
+//        return 500;
+    }
+
+    @Transactional
     public String sendSubscriptionEmail(String email) {
         Optional<Member> existingMember = memberRepository.findByEmail(email);
         if (existingMember.isPresent() && existingMember.get().isNoticeFlag()) {
-            return "이미 구독 중입니다.";
+            throw new IllegalArgumentException("이미 구독 중입니다.");
+        }
+
+        if (getSubscribeMemberCount() >= 500) {
+            throw new IllegalArgumentException("구독자 수가 최대치를 초과하여 구독할 수 없습니다.");
         }
 
         try {
@@ -34,12 +44,15 @@ public class MemberService {
 
     @Transactional
     public String verifyAndSubscribe(String email, String token) {
+        if (getSubscribeMemberCount() >= 500) {
+            throw new IllegalArgumentException("구독자 수가 최대치를 초과하여 구독할 수 없습니다.");
+        }
+
         boolean isVerified = emailService.verifyEmail(email, token);
         if (isVerified) {
             Member member = memberRepository.findByEmail(email)
                 .orElse(Member.builder()
                     .email(email)
-                    .noticeType("MAIN")
                     .noticeFlag(true)
                     .build());
 
@@ -48,7 +61,7 @@ public class MemberService {
             log.info("[구독] " + email);
             return "구독이 성공적으로 완료되었습니다.";
         }
-        return "유효하지 않은 인증 토큰입니다.";
+        throw new IllegalArgumentException("유효하지 않은 인증 토큰입니다.");
     }
 
     @Transactional
@@ -76,6 +89,6 @@ public class MemberService {
             log.info("[구독취소] " + email);
             return "구독이 성공적으로 취소되었습니다.";
         }
-        return "유효하지 않은 인증 토큰입니다.";
+        throw new IllegalArgumentException("유효하지 않은 인증 토큰입니다.");
     }
 }

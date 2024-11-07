@@ -35,6 +35,7 @@ label {
 input[type="email"], input[type="text"] {
   padding: 10px;
   margin-top: 5px;
+  margin-bottom: 15px; /* Input과 Button 사이의 간격 */
   border: 1px solid #ddd;
   border-radius: 4px;
 }
@@ -59,7 +60,6 @@ button:hover, .nav-button:hover {
   display: flex;
   flex-direction: column;
 }
-
 
 .message {
   margin-top: 15px;
@@ -98,3 +98,24 @@ button:disabled, .nav-button:disabled {
   cursor: not-allowed; /* 커서를 "금지" 모양으로 변경 */
 }
 
+.subscriber-count {
+  background-color: #4A90E2; /* 새로운 파란색 계열 배경색 */
+  color: #ffffff; /* 텍스트 색상 흰색 */
+  font-weight: bold;
+  padding: 20px;
+  border-radius: 10px;
+  text-align: center;
+  margin-bottom: 20px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2); /* 그림자 추가 */
+  font-size: 18px;
+  line-height: 1.6;
+}
+
+.subscriber-count p {
+  margin: 0;
+}
+
+.subscriber-count span {
+  font-size: 20px;
+  color: #FFD700; /* 구독자 수 강조 색상으로 노란색 */
+}

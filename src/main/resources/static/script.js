@@ -30,18 +30,26 @@ function handleSubscriptionRequest(event) {
     },
     body: new URLSearchParams({ email: email })
   })
-      .then(response => response.text())
-      .then(data => {
-        if (data.includes('이미 구독 중')) {
-          displayAlert(messageElement, data, 'error');
-        } else {
-          displayAlert(messageElement, '구독 요청이 성공적으로 완료되었습니다. 인증 번호를 입력해주세요.', 'success');
-          document.getElementById('subscriptionTokenSection').classList.remove('hidden');
+      .then(response => {
+        if (!response.ok) {
+          // 서버에서 오류 상태로 응답한 경우
+          return response.text().then(errorMessage => {
+            throw new Error(errorMessage); // 오류 메시지를 새로 던져서 다음 'catch'에서 잡을 수 있도록 함
+          });
         }
+        return response.text(); // 성공 시 텍스트 반환
+      })
+      .then(data => {
+        displayAlert(messageElement, '구독 요청이 성공적으로 완료되었습니다. 인증 번호를 입력해주세요.', 'success');
+        document.getElementById('subscriptionTokenSection').classList.remove('hidden');
       })
       .catch(error => {
         console.error('Error:', error);
-        displayAlert(messageElement, '구독 요청 중 오류가 발생했습니다.', 'error');
+        const errorMessage = error.message.includes('[ERROR]')
+            ? error.message.split('[ERROR]')[1].trim() // [ERROR] 이후 메시지 가져오기
+            : error.message; // [ERROR]가 없으면 전체 메시지 사용
+
+        displayAlert(messageElement, errorMessage || '구독 요청 중 오류가 발생했습니다.', 'error');
       })
       .finally(() => {
         // 요청 완료 후 버튼 다시 활성화
@@ -71,18 +79,25 @@ function handleUnsubscriptionRequest(event) {
     },
     body: new URLSearchParams({ email: email })
   })
-      .then(response => response.text())
-      .then(data => {
-        if (data.includes('[ERROR]')) {
-          displayAlert(messageElement, data, 'error');
-        } else {
-          displayAlert(messageElement, '구독 취소 요청이 성공적으로 완료되었습니다. 인증 번호를 입력해주세요.', 'success');
-          document.getElementById('unsubscriptionTokenSection').classList.remove('hidden');
+      .then(response => {
+        if (!response.ok) {
+          return response.text().then(errorMessage => {
+            throw new Error(errorMessage); // 오류 메시지를 던져서 다음 'catch'에서 잡을 수 있도록 함
+          });
         }
+        return response.text(); // 성공 시 텍스트 반환
+      })
+      .then(data => {
+        displayAlert(messageElement, '구독 취소 요청이 성공적으로 완료되었습니다. 인증 번호를 입력해주세요.', 'success');
+        document.getElementById('unsubscriptionTokenSection').classList.remove('hidden');
       })
       .catch(error => {
         console.error('Error:', error);
-        displayAlert(messageElement, '구독 취소 요청 중 오류가 발생했습니다.', 'error');
+        const errorMessage = error.message.includes('[ERROR]')
+            ? error.message.split('[ERROR]')[1].trim()
+            : error.message;
+
+        displayAlert(messageElement, errorMessage || '구독 취소 요청 중 오류가 발생했습니다.', 'error');
       })
       .finally(() => {
         // 요청 완료 후 버튼 다시 활성화
@@ -113,13 +128,24 @@ function handleVerifySubscription(event) {
     },
     body: new URLSearchParams({ email: email, token: token })
   })
-      .then(response => response.text())
+      .then(response => {
+        if (!response.ok) {
+          return response.text().then(errorMessage => {
+            throw new Error(errorMessage);
+          });
+        }
+        return response.text();
+      })
       .then(data => {
         displayAlert(messageElement, data, 'success');
       })
       .catch(error => {
         console.error('Error:', error);
-        displayAlert(messageElement, '인증 번호 확인 중 오류가 발생했습니다.', 'error');
+        const errorMessage = error.message.includes('[ERROR]')
+            ? error.message.split('[ERROR]')[1].trim()
+            : error.message;
+
+        displayAlert(messageElement, errorMessage || '인증 번호 확인 중 오류가 발생했습니다.', 'error');
       })
       .finally(() => {
         // 요청 완료 후 버튼 다시 활성화
@@ -150,13 +176,24 @@ function handleVerifyUnsubscription(event) {
     },
     body: new URLSearchParams({ email: email, token: token })
   })
-      .then(response => response.text())
+      .then(response => {
+        if (!response.ok) {
+          return response.text().then(errorMessage => {
+            throw new Error(errorMessage);
+          });
+        }
+        return response.text();
+      })
       .then(data => {
         displayAlert(messageElement, data, 'success');
       })
       .catch(error => {
         console.error('Error:', error);
-        displayAlert(messageElement, '구독 취소 확인 중 오류가 발생했습니다.', 'error');
+        const errorMessage = error.message.includes('[ERROR]')
+            ? error.message.split('[ERROR]')[1].trim()
+            : error.message;
+
+        displayAlert(messageElement, errorMessage || '구독 취소 확인 중 오류가 발생했습니다.', 'error');
       })
       .finally(() => {
         // 요청 완료 후 버튼 다시 활성화

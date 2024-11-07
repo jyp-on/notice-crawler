@@ -35,7 +35,7 @@ public class NoticeCrawlerService {
         this.emailService = emailService;
     }
 
-    public void checkTodayMainNotice() {
+    public void checkTodayNotice() {
         try {
             List<String> noticeList = new ArrayList<>();
 
@@ -48,7 +48,7 @@ public class NoticeCrawlerService {
             // 수집한 공지사항이 있으면 이메일 발송
             if (!noticeList.isEmpty()) {
                 String htmlContent = createNoticeInfoHtml(noticeList);
-                notifyNoticeMembers(htmlContent, "MAIN");
+                notifyNoticeMembers(htmlContent);
                 log.info("당일 공지사항이 이메일로 발송되었습니다.");
             } else {
                 log.info("오늘의 새로운 공지사항이 없습니다.");
@@ -88,8 +88,8 @@ public class NoticeCrawlerService {
         return noticeDate.isEqual(currentDate);
     }
 
-    private void notifyNoticeMembers(String noticeInfo, String noticeType) {
-        List<Member> mainNoticeMembers = memberRepository.findByNoticeTypeAndNoticeFlagOrderByIdDesc(noticeType, true);
+    private void notifyNoticeMembers(String noticeInfo) {
+        List<Member> mainNoticeMembers = memberRepository.findByNoticeFlagOrderByIdDesc(true);
 
         // CompletableFuture 리스트를 만들어 모든 작업이 완료될 때까지 기다림
         List<CompletableFuture<Void>> futures = mainNoticeMembers.stream()

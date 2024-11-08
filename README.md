@@ -32,7 +32,7 @@ Blocking I/O 문제로 인해 발송 시간이 오래 걸렸으나, 병렬 처�
 
 ## 기술 스택
 
-- **백엔드**: Spring Boot, Java, JPA/Hibernate
+- **백엔드**: Spring Boot, Java, JPA/Hibernate, Thymeleaf
 - **데이터베이스**: MySQL, Redis (이메일 인증 코드 저장)
 - **이메일 전송**: SMTP (Gmail)
 - **배포 환경**: 라즈베리파이 서버 (Ubuntu 22.04 LTS)

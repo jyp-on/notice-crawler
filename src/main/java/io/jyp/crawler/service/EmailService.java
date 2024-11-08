@@ -6,8 +6,6 @@ import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
 import java.time.Duration;
 import java.util.Random;
-import lombok.AllArgsConstructor;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
@@ -41,16 +39,21 @@ public class EmailService {
     }
 
     // Method to send notices
-    public void sendEmail(Member member, String noticeInfo) throws MessagingException {
-        MimeMessage message = noticeMailSender.createMimeMessage();
-        MimeMessageHelper helper = new MimeMessageHelper(message, "utf-8");
+    public void sendEmail(Member member, String noticeInfo) throws Exception {
+        try {
+            MimeMessage message = noticeMailSender.createMimeMessage();
+            MimeMessageHelper helper = new MimeMessageHelper(message, "utf-8");
 
-        helper.setFrom(noticeSenderEmail);
-        helper.setTo(member.getEmail());
-        helper.setSubject("[notice-crawler] 오늘의 공지사항 전송드립니다");
-        helper.setText(noticeInfo, true);
+            helper.setFrom(noticeSenderEmail);
+            helper.setTo(member.getEmail());
+            helper.setSubject("[notice-crawler] 오늘의 공지사항 전송드립니다");
+            helper.setText(noticeInfo, true);
 
-        noticeMailSender.send(message);
+            noticeMailSender.send(message);
+        } catch (Exception e) {
+            log.error("[이메일 발송 오류] {} - {}", member.getEmail(), e.getMessage()); // 오류 메시지 로깅
+            throw e; // 예외를 상위로 던져서 재시도 로직으로 처리
+        }
     }
 
     // Method to send verification emails

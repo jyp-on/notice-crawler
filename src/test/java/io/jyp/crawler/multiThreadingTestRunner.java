@@ -47,7 +47,7 @@ class multiThreadingTestRunner {
                 try {
                     emailService.sendEmail(member, "test");
                     log.info("[이메일 발송] {}", member.getEmail());
-                } catch (MessagingException e) {
+                } catch (Exception e) {
                     log.error("[이메일 발송 실패] {}", member.getEmail(), e);
                     throw new RuntimeException(e); // 예외를 명시적으로 던져 CompletionException의 원인을 알 수 있도록 함
                 }

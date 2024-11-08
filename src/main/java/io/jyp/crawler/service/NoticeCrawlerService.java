@@ -5,7 +5,6 @@ import static io.jyp.crawler.util.HtmlParser.createNoticeRowHtml;
 
 import io.jyp.crawler.entity.Member;
 import io.jyp.crawler.repository.MemberRepository;
-import jakarta.mail.MessagingException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -25,7 +24,7 @@ import java.util.List;
 @Service
 public class NoticeCrawlerService {
 
-    private final ExecutorService emailExecutor = Executors.newFixedThreadPool(10); // Ubuntu 서버에서 테스트 결과 적정개수 10개
+    private final ExecutorService emailExecutor = Executors.newFixedThreadPool(10); // 테스트 결과 적정개수 10개
     private final MemberRepository memberRepository;
     private final EmailService emailService;
 
@@ -48,7 +47,8 @@ public class NoticeCrawlerService {
             // 수집한 공지사항이 있으면 이메일 발송
             if (!noticeList.isEmpty()) {
                 String htmlContent = createNoticeInfoHtml(noticeList);
-                notifyNoticeMembers(htmlContent);
+                List<Member> members = memberRepository.findByNoticeFlagOrderByIdDesc(true);
+                notifyNoticeMembers(htmlContent, members);
                 log.info("당일 공지사항이 이메일로 발송되었습니다.");
             } else {
                 log.info("오늘의 새로운 공지사항이 없습니다.");
@@ -88,22 +88,42 @@ public class NoticeCrawlerService {
         return noticeDate.isEqual(currentDate);
     }
 
-    private void notifyNoticeMembers(String noticeInfo) {
-        List<Member> mainNoticeMembers = memberRepository.findByNoticeFlagOrderByIdDesc(true);
-
-        // CompletableFuture 리스트를 만들어 모든 작업이 완료될 때까지 기다림
-        List<CompletableFuture<Void>> futures = mainNoticeMembers.stream()
+    public void notifyNoticeMembers(String noticeInfo, List<Member> members) {
+        List<CompletableFuture<Void>> futures = members.stream()
             .map(member -> CompletableFuture.runAsync(() -> {
-                try {
-                    emailService.sendEmail(member, noticeInfo);
-                    log.info("[이메일 발송] {}", member.getEmail());
-                } catch (MessagingException e) {
-                    log.error("[이메일 발송 실패] {}", member.getEmail(), e);
-                }
+                // 예외 처리를 내부에서 모두 수행하도록 수정
+                retrySendEmail(member, noticeInfo, 5); // 최대 5회 재시도
             }, emailExecutor))
             .toList();
 
-        // 모든 작업이 끝날 때까지 기다림
         CompletableFuture.allOf(futures.toArray(new CompletableFuture[0])).join();
+    }
+
+    // 재시도 로직을 포함한 이메일 발송 메서드
+    private void retrySendEmail(Member member, String noticeInfo, int maxRetries) {
+        int attempt = 0;
+        while (attempt < maxRetries) {
+            try {
+                emailService.sendEmail(member, noticeInfo);
+                log.info("[이메일 발송 성공] {} {}", member.getEmail(), member.getId());
+                return; // 성공 시 종료
+            } catch (Exception e) {
+                if (e.getMessage().contains("421-4.3.0")) { // 421-4.3.0 오류 시 재시도
+                    attempt++;
+                    log.warn("[이메일 발송 재시도] {} {} - 시도 {}회", member.getEmail(), member.getId(), attempt);
+                    try {
+                        Thread.sleep(15000); // 15초 대기 후 재시도
+                    } catch (InterruptedException ie) {
+                        Thread.currentThread().interrupt();
+                        log.error("재시도 중 인터럽트 발생 - {}", member.getEmail());
+                        return;
+                    }
+                } else {
+                    log.error("[이메일 발송 실패 - 즉시 종료] {} {}", member.getEmail(), e);
+                    return; // 다른 오류일 경우 즉시 종료
+                }
+            }
+        }
+        log.error("421 오류로 인해 이메일 발송 실패: {}", member.getEmail());
     }
 }

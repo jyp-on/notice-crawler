@@ -24,7 +24,7 @@ import java.util.List;
 @Service
 public class NoticeCrawlerService {
 
-    private final ExecutorService emailExecutor = Executors.newFixedThreadPool(10); // 테스트 결과 적정개수 10개
+    private final ExecutorService emailExecutor = Executors.newFixedThreadPool(8); // 테스트 결과 적정개수 8개
     private final MemberRepository memberRepository;
     private final EmailService emailService;
 
@@ -91,11 +91,12 @@ public class NoticeCrawlerService {
     public void notifyNoticeMembers(String noticeInfo, List<Member> members) {
         List<CompletableFuture<Void>> futures = members.stream()
             .map(member -> CompletableFuture.runAsync(() -> {
-                // 예외 처리를 내부에서 모두 수행하도록 수정
+                // 예외 처리를 모두 내부에서 수행하도록 수정
                 retrySendEmail(member, noticeInfo, 5); // 최대 5회 재시도
             }, emailExecutor))
             .toList();
 
+        // 모든 비동기 작업들이 완료될 때까지 대기
         CompletableFuture.allOf(futures.toArray(new CompletableFuture[0])).join();
     }
 
@@ -108,22 +109,17 @@ public class NoticeCrawlerService {
                 log.info("[이메일 발송 성공] {} {}", member.getEmail(), member.getId());
                 return; // 성공 시 종료
             } catch (Exception e) {
-                if (e.getMessage().contains("421-4.3.0")) { // 421-4.3.0 오류 시 재시도
-                    attempt++;
-                    log.warn("[이메일 발송 재시도] {} {} - 시도 {}회", member.getEmail(), member.getId(), attempt);
-                    try {
-                        Thread.sleep(15000); // 15초 대기 후 재시도
-                    } catch (InterruptedException ie) {
-                        Thread.currentThread().interrupt();
-                        log.error("재시도 중 인터럽트 발생 - {}", member.getEmail());
-                        return;
-                    }
-                } else {
-                    log.error("[이메일 발송 실패 - 즉시 종료] {} {}", member.getEmail(), e);
-                    return; // 다른 오류일 경우 즉시 종료
+                attempt++;
+                log.warn("[이메일 발송 재시도] {} {} - 시도 {}회", member.getEmail(), member.getId(), attempt);
+                try {
+                    Thread.sleep(15000); // 오류 발생한 스레드 15초 대기 후 재시도
+                } catch (InterruptedException ie) {
+                    Thread.currentThread().interrupt();
+                    log.error("재시도 중 인터럽트 발생 - {}", member.getEmail());
+                    return;
                 }
             }
         }
-        log.error("421 오류로 인해 이메일 발송 실패: {}", member.getEmail());
+        log.error("오류로 인해 이메일 발송 실패: {}", member.getEmail());
     }
 }

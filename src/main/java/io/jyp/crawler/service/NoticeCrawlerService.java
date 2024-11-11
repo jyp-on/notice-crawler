@@ -24,7 +24,7 @@ import java.util.List;
 @Service
 public class NoticeCrawlerService {
 
-    private final ExecutorService emailExecutor = Executors.newFixedThreadPool(8); // 테스트 결과 적정개수 8개
+    private final ExecutorService emailExecutor = Executors.newFixedThreadPool(10); // 테스트 결과 적정개수 10개
     private final MemberRepository memberRepository;
     private final EmailService emailService;
 
@@ -92,7 +92,7 @@ public class NoticeCrawlerService {
         List<CompletableFuture<Void>> futures = members.stream()
             .map(member -> CompletableFuture.runAsync(() -> {
                 // 예외 처리를 모두 내부에서 수행하도록 수정
-                retrySendEmail(member, noticeInfo, 5); // 최대 5회 재시도
+                retrySendEmail(member, noticeInfo, 10); // 최대 10회 재시도
             }, emailExecutor))
             .toList();
 
@@ -111,8 +111,9 @@ public class NoticeCrawlerService {
             } catch (Exception e) {
                 attempt++;
                 log.warn("[이메일 발송 재시도] {} {} - 시도 {}회", member.getEmail(), member.getId(), attempt);
+                long waitTime = (long) Math.pow(2, attempt) * 15000; // 지수 백오프 방식 (30초, 60초, 120초, 240초, 480초)
                 try {
-                    Thread.sleep(15000); // 오류 발생한 스레드 15초 대기 후 재시도
+                    Thread.sleep(waitTime);
                 } catch (InterruptedException ie) {
                     Thread.currentThread().interrupt();
                     log.error("재시도 중 인터럽트 발생 - {}", member.getEmail());

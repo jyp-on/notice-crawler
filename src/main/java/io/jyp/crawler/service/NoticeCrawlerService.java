@@ -110,7 +110,7 @@ public class NoticeCrawlerService {
                 return; // 성공 시 종료
             } catch (Exception e) {
                 attempt++;
-                log.warn("[이메일 발송 재시도] {} {} - 시도 {}회", member.getEmail(), member.getId(), attempt);
+                log.warn("[이메일 발송 재시도] 시도 {}회 | 오류: {} | 이메일: {} | ID: {}", attempt, e.getMessage(), member.getEmail(), member.getId());
                 long waitTime = (long) Math.pow(2, attempt) * 15000; // 지수 백오프 방식 (30초, 60초, 120초, 240초, 480초)
                 try {
                     Thread.sleep(waitTime);
@@ -121,6 +121,6 @@ public class NoticeCrawlerService {
                 }
             }
         }
-        log.error("오류로 인해 이메일 발송 실패: {}", member.getEmail());
+        log.error("이메일 발송 실패: {}", member.getEmail());
     }
 }

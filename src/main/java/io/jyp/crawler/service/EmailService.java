@@ -51,7 +51,6 @@ public class EmailService {
 
             noticeMailSender.send(message);
         } catch (Exception e) {
-            log.error("[이메일 발송 오류] {} - {}", member.getEmail(), e.getMessage()); // 오류 메시지 로깅
             throw e; // 예외를 상위로 던져서 재시도 로직으로 처리
         }
     }

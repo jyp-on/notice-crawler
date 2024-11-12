@@ -1,28 +1,38 @@
 package io.jyp.crawler.filter;
 
+import org.springframework.stereotype.Component;
+
 import jakarta.servlet.Filter;
 import jakarta.servlet.FilterChain;
-import jakarta.servlet.FilterConfig;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.ServletRequest;
 import jakarta.servlet.ServletResponse;
-import jakarta.servlet.annotation.WebFilter;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
-@WebFilter(urlPatterns = "/*")
+@Component
 public class RequestFilter implements Filter {
     @Override
-    public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
+    public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
+        throws IOException, ServletException {
+        HttpServletRequest httpRequest = (HttpServletRequest) request;
+        HttpServletResponse httpResponse = (HttpServletResponse) response;
+
         try {
-            chain.doFilter(request, response);
+            // 유효하지 않은 HTTP 메소드 체크
+            String method = httpRequest.getMethod();
+            if (method != null && isValidHttpMethod(method)) {
+                chain.doFilter(request, response);
+            } else {
+                httpResponse.sendError(HttpServletResponse.SC_BAD_REQUEST);
+            }
         } catch (IllegalArgumentException e) {
-            // 비정상 요청 무시
+            httpResponse.sendError(HttpServletResponse.SC_BAD_REQUEST);
         }
     }
 
-    @Override
-    public void init(FilterConfig filterConfig) throws ServletException {}
-
-    @Override
-    public void destroy() {}
+    private boolean isValidHttpMethod(String method) {
+        return method.matches("^(GET|POST|PUT|DELETE|PATCH|HEAD|OPTIONS)$");
+    }
 }

@@ -1,25 +1,20 @@
-package io.jyp.crawler.util;
+package io.jyp.crawler.util
 
-import java.util.List;
+object HtmlParser {
 
-public class HtmlParser {
-
-    private HtmlParser() {
-        // 유틸리티 클래스는 인스턴스화하지 않음
-    }
-
-    public static String createNoticeRowHtml(String title, String link, String author) {
+    fun createNoticeRowHtml(title: String?, link: String?, author: String?): String {
         return """
             <tr>
                 <td style="border: 1px solid #ddd; padding: 12px;">
-                    <a href="%s" style="text-decoration: none; color: #2196F3;">%s</a>
+                    <a href="$link" style="text-decoration: none; color: #2196F3;">$title</a>
                 </td>
-                <td style="border: 1px solid #ddd; padding: 12px;">%s</td>
+                <td style="border: 1px solid #ddd; padding: 12px;">$author</td>
             </tr>
-        """.formatted(link, title, author);
+        """.trimIndent()
     }
 
-    public static String createNoticeInfoHtml(List<String> noticeRows) {
+    fun createNoticeInfoHtml(noticeRows: List<String?>?): String {
+        val rowsHtml = noticeRows?.joinToString("\n") ?: ""
         return """
             <html lang="ko">
             <head>
@@ -33,12 +28,12 @@ public class HtmlParser {
                     <div style="text-align: center; padding-bottom: 20px; border-bottom: 1px solid #ddd; margin-top: 10px;">
                         <h2 style="color: #4CAF50; font-family: Arial, sans-serif; font-size: 24px;">오늘의 공지사항!</h2>
                     </div>
-                    <table style="border-collapse: collapse; width: 100%%; font-family: Arial, sans-serif; margin-top: 30px;">
+                    <table style="border-collapse: collapse; width: 100%; font-family: Arial, sans-serif; margin-top: 30px;">
                         <tr>
                             <th style="border: 1px solid #ddd; padding: 12px; background-color: #f9f9f9; color: #333;">제목</th>
                             <th style="border: 1px solid #ddd; padding: 12px; background-color: #f9f9f9; color: #333;">작성자</th>
                         </tr>
-                        %s
+                        $rowsHtml
                     </table>
                     <div style="text-align: center; padding-top: 20px; margin-top:30px; border-top: 1px solid #ddd;">
                         <p style="font-size: 12px; color: #999;">문의사항이 있으시면 아래 이메일로 연락해 주세요.</p>
@@ -49,10 +44,10 @@ public class HtmlParser {
                 </div>
             </body>
             </html>
-        """.formatted(String.join("\n", noticeRows));
+        """.trimIndent()
     }
 
-    public static String createVerifyEmailHtml(String authCode) {
+    fun createVerifyEmailHtml(authCode: String?): String {
         return """
             <html lang="ko">
             <head>
@@ -68,7 +63,7 @@ public class HtmlParser {
                     </div>
                     <div style="padding: 25px 0; text-align: center;">
                         <p style="line-height: 1.6; color: #666; font-size: 16px;">아래의 인증 코드를 사용하여 이메일 인증을 완료해 주세요:</p>
-                        <span style="display: inline-block; padding: 12px 18px; margin: 20px auto; background: #f0f0f0; border: 1px solid #ddd; border-radius: 8px; font-weight: bold; color: #333; font-family: 'Courier New', Courier, monospace; font-size: 20px;">%s</span>
+                        <span style="display: inline-block; padding: 12px 18px; margin: 20px auto; background: #f0f0f0; border: 1px solid #ddd; border-radius: 8px; font-weight: bold; color: #333; font-family: 'Courier New', Courier, monospace; font-size: 20px;">$authCode</span>
                         <p style="line-height: 1.6; color: #666; font-size: 16px;">인증 코드는 5분 동안만 유효하니, 그 안에 인증을 완료해 주세요.</p>
                     </div>
                     <div style="text-align: center; padding-top: 20px; border-top: 1px solid #ddd;">
@@ -80,6 +75,6 @@ public class HtmlParser {
                 </div>
             </body>
             </html>
-        """.formatted(authCode);
+        """.trimIndent()
     }
 }

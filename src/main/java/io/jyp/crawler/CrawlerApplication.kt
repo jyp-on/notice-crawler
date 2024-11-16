@@ -1,14 +1,13 @@
-package io.jyp.crawler;
+package io.jyp.crawler
 
-import org.springframework.boot.SpringApplication;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
+import org.springframework.boot.autoconfigure.SpringBootApplication
+import org.springframework.boot.runApplication
+import org.springframework.data.jpa.repository.config.EnableJpaAuditing
 
 @EnableJpaAuditing
 @SpringBootApplication
-public class CrawlerApplication {
+class CrawlerApplication
 
-	public static void main(String[] args) {
-		SpringApplication.run(CrawlerApplication.class, args);
-	}
+fun main(args: Array<String>) {
+    runApplication<CrawlerApplication>(*args)
 }

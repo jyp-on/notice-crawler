@@ -1,32 +1,27 @@
-package io.jyp.crawler.service;
+package io.jyp.crawler.service
 
-import static org.junit.jupiter.api.Assertions.*;
-
-import io.jyp.crawler.entity.Member;
-import java.util.ArrayList;
-import java.util.List;
-import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
+import io.jyp.crawler.entity.Member
+import org.junit.jupiter.api.Test
+import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.boot.test.context.SpringBootTest
 
 @SpringBootTest
-class NoticeCrawlerServiceTest {
-
-    @Autowired
-    private NoticeCrawlerService noticeCrawlerService;
+class NoticeCrawlerServiceTest @Autowired constructor(
+    private val noticeCrawlerService: NoticeCrawlerService
+) {
 
     @Test
-    void crawling() {
-        noticeCrawlerService.checkTodayNotice();
+    fun crawling() {
+        noticeCrawlerService.checkTodayNotice()
     }
 
     @Test
-    void notifyMember() {
-        String noticeInfo = "test";
-        List<Member> members = new ArrayList<>();
-        for (int i = 0; i < 30; i++) {
-            members.add(new Member(i+1, "ju_" + i + "park@naver.com", true));
+    fun notifyMember() {
+        val noticeInfo = "test"
+        val members = List(1) { i ->
+            Member(id = (i + 1).toLong(), email = "ju${i}_park@naver.com", noticeFlag = true)
         }
-        noticeCrawlerService.notifyNoticeMembers(noticeInfo, members);
+
+        noticeCrawlerService.notifyNoticeMembers(noticeInfo, members)
     }
 }

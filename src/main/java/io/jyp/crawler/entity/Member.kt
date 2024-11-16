@@ -1,32 +1,16 @@
-package io.jyp.crawler.entity;
+package io.jyp.crawler.entity
 
-import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-import lombok.ToString;
-import java.util.ArrayList;
-import java.util.List;
+import jakarta.persistence.*
 
-@Getter
-@Setter
-@Builder
-@AllArgsConstructor
-@NoArgsConstructor
-@ToString
 @Entity
-public class Member extends BaseTimeEntity {
-
+data class Member(
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
+    val id: Long = 0, // Primary Key, 기본값 0
 
     @Column(nullable = false, unique = true)
-    private String email;
+    val email: String, // null 불가능
 
     @Column(nullable = false)
-    private boolean noticeFlag; // 알림 여부
-
-}
+    var noticeFlag: Boolean = false // 알림 여부, 기본값 false
+) : BaseTimeEntity()

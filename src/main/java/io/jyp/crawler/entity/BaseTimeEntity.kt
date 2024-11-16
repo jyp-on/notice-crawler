@@ -1,24 +1,24 @@
-package io.jyp.crawler.entity;
+package io.jyp.crawler.entity
 
-import jakarta.persistence.Column;
-import jakarta.persistence.EntityListeners;
-import jakarta.persistence.MappedSuperclass;
-import java.time.LocalDateTime;
-import lombok.Getter;
-import org.springframework.data.annotation.CreatedDate;
-import org.springframework.data.annotation.LastModifiedDate;
-import org.springframework.data.jpa.domain.support.AuditingEntityListener;
+import jakarta.persistence.Column
+import jakarta.persistence.EntityListeners
+import jakarta.persistence.MappedSuperclass
+import org.springframework.data.annotation.CreatedDate
+import org.springframework.data.annotation.LastModifiedDate
+import org.springframework.data.jpa.domain.support.AuditingEntityListener
+import java.time.LocalDateTime
 
-@Getter
 @MappedSuperclass
-@EntityListeners(AuditingEntityListener.class)
-public abstract class BaseTimeEntity {
+@EntityListeners(AuditingEntityListener::class)
+abstract class BaseTimeEntity {
 
     @CreatedDate
     @Column(updatable = false)
-    private LocalDateTime createdDate;
+    var createdDate: LocalDateTime? = null
+        private set // 외부에서 수정하지 못하도록 setter를 private으로 설정
 
     @LastModifiedDate
     @Column
-    private LocalDateTime modifiedDate;
+    var modifiedDate: LocalDateTime? = null
+        private set // 외부에서 수정하지 못하도록 setter를 private으로 설정
 }

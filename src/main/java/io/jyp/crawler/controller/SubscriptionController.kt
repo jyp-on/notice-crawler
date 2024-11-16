@@ -1,43 +1,49 @@
-package io.jyp.crawler.controller;
+package io.jyp.crawler.controller
 
-import io.jyp.crawler.dto.SubscriptionRequest;
-import io.jyp.crawler.service.MemberService;
-import lombok.RequiredArgsConstructor;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import io.jyp.crawler.service.MemberService
+import org.springframework.http.ResponseEntity
+import org.springframework.web.bind.annotation.PostMapping
+import org.springframework.web.bind.annotation.RequestMapping
+import org.springframework.web.bind.annotation.RequestParam
+import org.springframework.web.bind.annotation.RestController
 
 @RestController
-@RequiredArgsConstructor
 @RequestMapping("/api/subscription")
-public class SubscriptionController {
-
-    private final MemberService memberService;
+class SubscriptionController(
+    private val memberService: MemberService
+) {
 
     // 구독 생성 요청
     @PostMapping("/request")
-    public ResponseEntity<String> requestSubscription(@RequestParam String email) {
-        String response = memberService.sendSubscriptionEmail(email);
-        return ResponseEntity.ok(response);
+    fun requestSubscription(@RequestParam email: String?): ResponseEntity<String> {
+        val response = memberService.sendSubscriptionEmail(email)
+        return ResponseEntity.ok(response)
     }
 
     // 구독 생성 확인
     @PostMapping
-    public ResponseEntity<String> createSubscription(@RequestParam String email, @RequestParam String token) {
-        String response = memberService.verifyAndSubscribe(email, token);
-        return ResponseEntity.ok(response);
+    fun createSubscription(
+        @RequestParam email: String?,
+        @RequestParam token: String?
+    ): ResponseEntity<String> {
+        val response = memberService.verifyAndSubscribe(email, token)
+        return ResponseEntity.ok(response)
     }
 
     // 구독 취소 요청
     @PostMapping("/cancel/request")
-    public ResponseEntity<String> requestUnsubscription(@RequestParam String email) {
-        String response = memberService.sendCancellationEmail(email);
-        return ResponseEntity.ok(response);
+    fun requestUnsubscription(@RequestParam email: String?): ResponseEntity<String> {
+        val response = memberService.sendCancellationEmail(email)
+        return ResponseEntity.ok(response)
     }
 
     // 구독 취소 확인
     @PostMapping("/cancel")
-    public ResponseEntity<String> verifyAndUnsubscribe(@RequestParam String email, @RequestParam String token) {
-        String response = memberService.verifyAndUnsubscribe(email, token);
-        return ResponseEntity.ok(response);
+    fun verifyAndUnsubscribe(
+        @RequestParam email: String?,
+        @RequestParam token: String?
+    ): ResponseEntity<String> {
+        val response = memberService.verifyAndUnsubscribe(email, token)
+        return ResponseEntity.ok(response)
     }
 }

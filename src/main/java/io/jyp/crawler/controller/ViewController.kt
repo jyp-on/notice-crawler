@@ -1,34 +1,31 @@
-package io.jyp.crawler.controller;
+package io.jyp.crawler.controller
 
-import io.jyp.crawler.repository.MemberRepository;
-import io.jyp.crawler.service.MemberService;
-import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
+import io.jyp.crawler.service.MemberService
+import org.springframework.stereotype.Controller
+import org.springframework.ui.Model
+import org.springframework.web.bind.annotation.GetMapping
 
 @Controller
-@RequiredArgsConstructor
-public class ViewController {
-
-    private final MemberService memberService;
+class ViewController(
+    private val memberService: MemberService,
+) {
 
     @GetMapping
-    public String indexPage(Model model) {
-        long subscriberCount = memberService.getSubscribeMemberCount();
-        model.addAttribute("subscriberCount", subscriberCount);
-        return "index";
+    fun indexPage(model: Model): String {
+        val subscriberCount = memberService.subscribeMemberCount
+        model.addAttribute("subscriberCount", subscriberCount)
+        return "index"
     }
 
     @GetMapping("/subscription")
-    public String subscriptionPage(Model model) {
-        long subscriberCount = memberService.getSubscribeMemberCount();
-        model.addAttribute("subscriberCount", subscriberCount);
-        return "subscription";
+    fun subscriptionPage(model: Model): String {
+        val subscriberCount = memberService.subscribeMemberCount
+        model.addAttribute("subscriberCount", subscriberCount)
+        return "subscription"
     }
 
     @GetMapping("/un-subscription")
-    public String deSubscriptionPage() {
-        return "unSubscription";
+    fun deSubscriptionPage(): String {
+        return "unSubscription"
     }
 }

@@ -12,14 +12,14 @@ class ViewController(
 
     @GetMapping
     fun indexPage(model: Model): String {
-        val subscriberCount = memberService.subscribeMemberCount
+        val subscriberCount = memberService.getSubscribeMemberCount()
         model.addAttribute("subscriberCount", subscriberCount)
         return "index"
     }
 
     @GetMapping("/subscription")
     fun subscriptionPage(model: Model): String {
-        val subscriberCount = memberService.subscribeMemberCount
+        val subscriberCount = memberService.getSubscribeMemberCount()
         model.addAttribute("subscriberCount", subscriberCount)
         return "subscription"
     }

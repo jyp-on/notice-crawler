@@ -15,7 +15,7 @@ class SubscriptionController(
 
     // 구독 생성 요청
     @PostMapping("/request")
-    fun requestSubscription(@RequestParam email: String?): ResponseEntity<String> {
+    fun requestSubscription(@RequestParam email: String): ResponseEntity<String> {
         val response = memberService.sendSubscriptionEmail(email)
         return ResponseEntity.ok(response)
     }
@@ -23,8 +23,8 @@ class SubscriptionController(
     // 구독 생성 확인
     @PostMapping
     fun createSubscription(
-        @RequestParam email: String?,
-        @RequestParam token: String?
+        @RequestParam email: String,
+        @RequestParam token: String
     ): ResponseEntity<String> {
         val response = memberService.verifyAndSubscribe(email, token)
         return ResponseEntity.ok(response)
@@ -32,7 +32,7 @@ class SubscriptionController(
 
     // 구독 취소 요청
     @PostMapping("/cancel/request")
-    fun requestUnsubscription(@RequestParam email: String?): ResponseEntity<String> {
+    fun requestUnsubscription(@RequestParam email: String): ResponseEntity<String> {
         val response = memberService.sendCancellationEmail(email)
         return ResponseEntity.ok(response)
     }
@@ -40,8 +40,8 @@ class SubscriptionController(
     // 구독 취소 확인
     @PostMapping("/cancel")
     fun verifyAndUnsubscribe(
-        @RequestParam email: String?,
-        @RequestParam token: String?
+        @RequestParam email: String,
+        @RequestParam token: String
     ): ResponseEntity<String> {
         val response = memberService.verifyAndUnsubscribe(email, token)
         return ResponseEntity.ok(response)

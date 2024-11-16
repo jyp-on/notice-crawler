@@ -1,16 +1,14 @@
-package io.jyp.crawler.repository;
+package io.jyp.crawler.repository
 
-import io.jyp.crawler.entity.Member;
-import java.util.List;
-import java.util.Optional;
-import org.springframework.data.jpa.repository.JpaRepository;
+import io.jyp.crawler.entity.Member
+import org.springframework.data.jpa.repository.JpaRepository
+import java.util.*
 
-public interface MemberRepository extends JpaRepository<Member, Long> {
-
-    Optional<Member> findByEmail(String email);
-    List<Member> findByNoticeFlagOrderByIdDesc(boolean noticeFlag);
-    long countByNoticeFlag(boolean noticeFlag);
+interface MemberRepository : JpaRepository<Member, Long> {
+    fun findByEmail(email: String?): Optional<Member>
+    fun findByNoticeFlagOrderByIdDesc(noticeFlag: Boolean): List<Member>
+    fun countByNoticeFlag(noticeFlag: Boolean): Long
 
     // 11월 8일 오류로 인해 10명 메일전송 실패해서 만든 함수
-    List<Member> findTop10ByNoticeFlagOrderByIdAsc(boolean noticeFlag);
+    fun findTop10ByNoticeFlagOrderByIdAsc(noticeFlag: Boolean): List<Member>
 }

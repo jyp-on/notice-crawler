@@ -1,38 +1,32 @@
-package io.jyp.crawler.filter;
+package io.jyp.crawler.filter
 
-import org.springframework.stereotype.Component;
-
-import jakarta.servlet.Filter;
-import jakarta.servlet.FilterChain;
-import jakarta.servlet.ServletException;
-import jakarta.servlet.ServletRequest;
-import jakarta.servlet.ServletResponse;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
-import java.io.IOException;
+import jakarta.servlet.*
+import jakarta.servlet.http.HttpServletRequest
+import jakarta.servlet.http.HttpServletResponse
+import org.springframework.stereotype.Component
+import java.io.IOException
 
 @Component
-public class RequestFilter implements Filter {
-    @Override
-    public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
-        throws IOException, ServletException {
-        HttpServletRequest httpRequest = (HttpServletRequest) request;
-        HttpServletResponse httpResponse = (HttpServletResponse) response;
+class RequestFilter : Filter {
+    @Throws(IOException::class, ServletException::class)
+    override fun doFilter(request: ServletRequest, response: ServletResponse, chain: FilterChain) {
+        val httpRequest = request as HttpServletRequest
+        val httpResponse = response as HttpServletResponse
 
         try {
             // 유효하지 않은 HTTP 메소드 체크
-            String method = httpRequest.getMethod();
+            val method = httpRequest.method
             if (method != null && isValidHttpMethod(method)) {
-                chain.doFilter(request, response);
+                chain.doFilter(request, response)
             } else {
-                httpResponse.sendError(HttpServletResponse.SC_BAD_REQUEST);
+                httpResponse.sendError(HttpServletResponse.SC_BAD_REQUEST)
             }
-        } catch (IllegalArgumentException e) {
-            httpResponse.sendError(HttpServletResponse.SC_BAD_REQUEST);
+        } catch (e: IllegalArgumentException) {
+            httpResponse.sendError(HttpServletResponse.SC_BAD_REQUEST)
         }
     }
 
-    private boolean isValidHttpMethod(String method) {
-        return method.matches("^(GET|POST|PUT|DELETE|PATCH|HEAD|OPTIONS)$");
+    private fun isValidHttpMethod(method: String): Boolean {
+        return method.matches("^(GET|POST|PUT|DELETE|PATCH|HEAD|OPTIONS)$".toRegex())
     }
 }

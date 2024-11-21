@@ -20,6 +20,12 @@ repositories {
 }
 
 dependencies {
+	// Kotlin Coroutines Core 라이브러리
+	implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.7.3")
+	implementation("org.jetbrains.kotlinx:kotlinx-coroutines-jdk8:1.7.3")
+	implementation("org.jetbrains.kotlinx:kotlinx-coroutines-reactive:1.7.3")
+	testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.7.3")
+
 	implementation("org.springframework.boot:spring-boot-starter-data-jpa")
 	implementation("org.springframework.boot:spring-boot-starter-data-redis")
 	implementation("org.springframework.boot:spring-boot-starter-validation")

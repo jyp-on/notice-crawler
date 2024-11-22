@@ -84,7 +84,7 @@ class NoticeCrawlerService(
 
     @OptIn(ExperimentalCoroutinesApi::class)
     suspend fun notifyNoticeMembers(noticeInfo: String, members: List<Member>) = coroutineScope {
-        val emailDispatcher = Dispatchers.IO.limitedParallelism(20)
+        val emailDispatcher = Dispatchers.IO.limitedParallelism(15)
 
         // 각 멤버의 이메일 발송을 병렬로 처리
         val jobs = members.map { member ->

@@ -45,7 +45,6 @@ class EmailService(
 
             noticeMailSender.send(message)
         } catch (e: Exception) {
-            log.error("[이메일 전송 실패] {}: {}", member.email, e.message)
             throw e // 예외를 상위로 던져서 재시도 로직으로 처리
         }
     }

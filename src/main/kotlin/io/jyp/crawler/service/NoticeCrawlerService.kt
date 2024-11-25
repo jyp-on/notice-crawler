@@ -24,10 +24,11 @@ class NoticeCrawlerService(
         try {
             val noticeList = mutableListOf<String>()
 
-            // 1페이지와 2페이지 공지사항을 비동기로 크롤링
+            // 1~3페이지 공지사항을 비동기로 크롤링
             val urls = listOf(
                 "https://www.hallym.ac.kr/hallym_univ/sub05/cP3/sCP1.html?nttId=0&bbsTyCode=BBST00&bbsAttrbCode=BBSA03&authFlag=N&pageIndex=1&searchType=0&searchWrd=",
-                "https://www.hallym.ac.kr/hallym_univ/sub05/cP3/sCP1.html?nttId=0&bbsTyCode=BBST00&bbsAttrbCode=BBSA03&authFlag=N&pageIndex=2&searchType=0&searchWrd="
+                "https://www.hallym.ac.kr/hallym_univ/sub05/cP3/sCP1.html?nttId=0&bbsTyCode=BBST00&bbsAttrbCode=BBSA03&authFlag=N&pageIndex=2&searchType=0&searchWrd=",
+                "https://www.hallym.ac.kr/hallym_univ/sub05/cP3/sCP1.html?nttId=0&bbsTyCode=BBST00&bbsAttrbCode=BBSA03&authFlag=N&pageIndex=3&searchType=0&searchWrd="
             )
 
             val crawlJobs = urls.map { url ->
@@ -82,41 +83,16 @@ class NoticeCrawlerService(
         return noticeDate.isEqual(currentDate)
     }
 
-    @OptIn(ExperimentalCoroutinesApi::class)
-    suspend fun notifyNoticeMembers(noticeInfo: String, members: List<Member>) = coroutineScope {
-        val emailDispatcher = Dispatchers.IO.limitedParallelism(15)
+    fun notifyNoticeMembers(noticeInfo: String, members: List<Member>) {
+        val chunkSize = 100 // 한 번에 발송가능한 최대 수신자 수
+        val memberChunks = members.chunked(chunkSize) // 100명씩 나누기
 
-        // 각 멤버의 이메일 발송을 병렬로 처리
-        val jobs = members.map { member ->
-            launch(emailDispatcher) {
-                retrySendEmail(member, noticeInfo)
-            }
-        }
-
-        // 모든 작업 완료 대기
-        jobs.joinAll()
-    }
-
-    private suspend fun retrySendEmail(member: Member, noticeInfo: String) {
-        var attempt = 0
-        while (attempt < 10) {
+        memberChunks.map { chunk ->
             try {
-                emailService.sendEmail(member, noticeInfo)
-                log.info("[이메일 발송 성공] {} {}", member.email, member.id)
-                return
+                emailService.sendBulkEmail(chunk, noticeInfo)
             } catch (e: Exception) {
-                attempt++
-                log.warn(
-                    "[이메일 발송 재시도] 시도 {}회 | 오류: {} | 이메일: {} | ID: {}",
-                    attempt,
-                    e.message,
-                    member.email,
-                    member.id
-                )
-                val waitTime = (1 shl attempt) * 1500L // 지수 백오프 방식
-                delay(waitTime) // 코루틴 친화적 대기
+                log.error("[그룹 이메일 발송 실패] 그룹 크기: {} | 오류: {}", chunk.size, e.message)
             }
         }
-        log.error("이메일 발송 실패: {}", member.email)
     }
 }

@@ -21,7 +21,7 @@ class EmailService(
     private val redisTemplate: RedisTemplate<String, String>
 ) {
 
-    companion object {
+    companion object { // 클래스 단위로 로거 정의
         private val log: Logger = LoggerFactory.getLogger(EmailService::class.java)
     }
 
@@ -31,21 +31,25 @@ class EmailService(
     @Value("\${spring.mail.verification.username}")
     private lateinit var verificationSenderEmail: String
 
-    // Method to send notices
     @Throws(Exception::class)
-    fun sendEmail(member: Member, noticeInfo: String) {
+    fun sendBulkEmail(membersChunk: List<Member>, noticeInfo: String) {
         try {
             val message = noticeMailSender.createMimeMessage()
             val helper = MimeMessageHelper(message, "utf-8")
 
             helper.setFrom(noticeSenderEmail)
-            helper.setTo(member.email)
             helper.setSubject("[notice-crawler] 오늘의 공지사항 전송드립니다")
             helper.setText(noticeInfo, true)
 
+            // BCC(숨은 참조)로 멤버 그룹 추가
+            val recipientEmails = membersChunk.map { it.email.trim() }.toTypedArray()
+            helper.setBcc(recipientEmails)
+
+            // 이메일 발송
             noticeMailSender.send(message)
+            log.info("[이메일 발송 성공] 그룹 수신자 수: {}", membersChunk.size)
         } catch (e: Exception) {
-            throw e // 예외를 상위로 던져서 재시도 로직으로 처리
+            throw e
         }
     }
 

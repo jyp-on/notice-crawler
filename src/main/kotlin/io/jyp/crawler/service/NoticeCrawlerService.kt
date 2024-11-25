@@ -83,16 +83,52 @@ class NoticeCrawlerService(
         return noticeDate.isEqual(currentDate)
     }
 
-    fun notifyNoticeMembers(noticeInfo: String, members: List<Member>) {
-        val chunkSize = 100 // 한 번에 발송가능한 최대 수신자 수
+    fun notifyNoticeMembers(noticeInfo: String, members: List<Member>, maxRetries: Int = 3) {
+        val chunkSize = 100 // 한 번에 발송 가능한 최대 수신자 수
         val memberChunks = members.chunked(chunkSize) // 100명씩 나누기
+        val failedIndexes = mutableListOf<Int>() // 실패한 그룹의 인덱스를 저장
 
-        memberChunks.map { chunk ->
+        // 첫 번째 시도
+        memberChunks.forEachIndexed { index, chunk ->
             try {
                 emailService.sendBulkEmail(chunk, noticeInfo)
             } catch (e: Exception) {
-                log.error("[그룹 이메일 발송 실패] 그룹 크기: {} | 오류: {}", chunk.size, e.message)
+                log.error(
+                    "[그룹 이메일 발송 실패] 그룹 크기: {} | 그룹 순서: {} | 오류: {}",
+                    chunk.size, index, e.message
+                )
+                failedIndexes.add(index) // 실패한 인덱스 추가
             }
         }
+
+        // 실패한 그룹 재시도
+        var attempt = 1
+        while (failedIndexes.isNotEmpty() && attempt <= maxRetries) {
+            log.info("재시도 시도 {}회 - 실패한 그룹 수: {}", attempt, failedIndexes.size)
+
+            val currentFailedIndexes = failedIndexes.toList() // 현재 실패한 인덱스를 복사
+            failedIndexes.clear() // 재시도 전 초기화
+
+            currentFailedIndexes.forEach { index ->
+                val chunk = memberChunks[index]
+                try {
+                    emailService.sendBulkEmail(chunk, noticeInfo)
+                    log.info("[그룹 이메일 재시도 성공] 그룹 순서: {}", index)
+                } catch (e: Exception) {
+                    log.error(
+                        "[그룹 이메일 재시도 실패] 그룹 크기: {} | 그룹 순서: {} | 오류: {}",
+                        chunk.size, index, e.message
+                    )
+                    failedIndexes.add(index) // 다시 실패한 그룹 추가
+                }
+            }
+            attempt++
+        }
+
+        // 최종 실패 결과
+        if (failedIndexes.isNotEmpty()) {
+            log.error("최종적으로 실패한 그룹 인덱스: {}", failedIndexes)
+        }
     }
+
 }

@@ -19,7 +19,7 @@ class MyScheduler(
     // 매일 20시에 당일 공지사항 전송
     @Scheduled(cron = "0 0 20 * * ?")
     fun crawlingJob() = runBlocking {
-        log.info("스케줄 작업 실행: 당일 공지사항 전송")
+        log.info("Notice Crawling Start")
         crawlerService.checkTodayNotice()
     }
 }

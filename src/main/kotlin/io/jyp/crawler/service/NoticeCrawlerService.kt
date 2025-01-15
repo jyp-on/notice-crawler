@@ -43,12 +43,12 @@ class NoticeCrawlerService(
                 val htmlContent = HtmlParser.createNoticeInfoHtml(noticeList)
                 val members = memberRepository.findByNoticeFlagOrderByIdDesc(true)
                 notifyNoticeMembers(htmlContent, members)
-                log.info("당일 공지사항이 이메일로 발송되었습니다.")
+                log.info("Notice Send")
             } else {
-                log.info("오늘의 새로운 공지사항이 없습니다.")
+                log.info("There is No Notice Today")
             }
         } catch (e: IOException) {
-            log.error("공지사항 페이지를 불러오는 중 오류 발생", e)
+            log.error("Error Notice Crawling", e)
         }
     }
 

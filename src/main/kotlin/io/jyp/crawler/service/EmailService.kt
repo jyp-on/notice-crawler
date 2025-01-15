@@ -47,7 +47,7 @@ class EmailService(
 
             // 이메일 발송
             noticeMailSender.send(message)
-            log.info("[이메일 발송 성공] 그룹 수신자 수: {}", membersChunk.size)
+            log.info("[Email Send] group size: {}", membersChunk.size)
         } catch (e: Exception) {
             throw e
         }
@@ -69,7 +69,7 @@ class EmailService(
         helper.setText(HtmlParser.createVerifyEmailHtml(authCode), true)
 
         verificationMailSender.send(message)
-        log.info("[인증번호 발송] {}", email)
+        log.info("[Email Verification Send] {}", email)
     }
 
     // Method to verify the email

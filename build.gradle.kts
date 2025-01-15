@@ -24,8 +24,8 @@ dependencies {
 	implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.7.3")
 	implementation("org.jetbrains.kotlinx:kotlinx-coroutines-jdk8:1.7.3")
 	implementation("org.jetbrains.kotlinx:kotlinx-coroutines-reactive:1.7.3")
+	implementation("org.springframework.boot:spring-boot-starter-actuator")
 	testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.7.3")
-
 	implementation("org.springframework.boot:spring-boot-starter-data-jpa")
 	implementation("org.springframework.boot:spring-boot-starter-data-redis")
 	implementation("org.springframework.boot:spring-boot-starter-validation")

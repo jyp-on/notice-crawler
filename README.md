@@ -20,6 +20,6 @@
 - **배포 환경**: 라즈베리파이 서버 (Ubuntu 22.04 LTS)
 - **기타**: DDNS (no-ip) - 동적 IP 관리
 
-## 프로젝트 링크 (25.01.24 부로 서비스 종료)
+## 프로젝트 링크 (24.10.31 ~ 25.01.24)
 
 - **Website**: ~~[http://notice-crawler.ddns.net/](http://notice-crawler.ddns.net/)~~
